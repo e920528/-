@@ -1,6 +1,6 @@
 # 終極密碼
 
-Use HTML5,CSS3,Pure Javascript
+Use HTML5, CSS3, Pure Javascript
 
 ## Demo
 [demo](https://e920528.github.io/Guess-Number-Game/)
