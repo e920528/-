@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ZH_TW">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="description" content="終極密碼">
+        <meta name="keyword" content="free game, 終極密碼">
+        <link href="stylesheets/custom.css" rel="stylesheet">
+
+        <title>終極密碼</title>
+    </head>
+    <body>
+        <h1>終極密碼</h1>
+        <!--設定密碼範圍-->
+        <h2 id="set-range-title">請設定密碼範圍</h2>
+        <form id="set-range-form">
+            <div align="center">
+                <p>請設定下限：<input type="number" class="input-number" id="lowerbound"></p>
+                <p>請設定上限：<input type="number" class="input-number" id="upperbound"></p>
+                <button type="button" value="輸入" onclick="setRange()">確定</button>                
+            </div>
+        </form>
+        <!--/設定密碼範圍-->
+        <!--play game-->
+        <h2 id="range"></h2>
+        <form id="form">
+            <div class="input">
+                <input type="number" class="input-number" id="guess">
+                <button type="button" value="輸入" onclick="checkAnswer()">輸入</button>
+            </div>      
+            <p align="center" id="alert" class="alert"></p>
+            <p id="time" class="time"></p>
+            <div align="center">
+                <button type="submit" onclick="location.href='single-player.html'">重新開始</button>
+                <button type="submit" onclick="location.href='index.html'">回首頁</button>
+            </div>
+        </form>
+        <!--/play game-->
+        <!--再來一局-->
+        <div id="renew" align="center">
+            <button type="submit" onclick="location.href='single-player.html'">再來一局</button>
+            <button type="submit" onclick="location.href='index.html'">回首頁</button>
+        </div>
+
+
+        <script>
+            //產生x-y的亂數
+            function getRandom(x,y){
+                return random = Math.floor(Math.random()*(y - x + 1)) + x;
+            };
+            var min;  //下限
+            var max;//上限
+            var ans;//正確答案
+            var time = 0; //猜測次數
+            //更新猜數字範圍
+            function updateRange(){
+                var text = "請在" + min + "至" + max + "的範圍內選擇一個數字";
+                document.getElementById("range").innerHTML = text; 
+                document.getElementById("alert").style.display = "none";
+            };
+            function setRange(){
+                min = parseFloat(document.getElementById("lowerbound").value);
+                max = parseFloat(document.getElementById("upperbound").value);
+                if(isNaN(min)){
+                    alert("請輸入下限");
+                }
+                else if(isNaN(max)){
+                    alert("請輸入上限");
+                }
+                else if(!Number.isInteger(min)){
+                    alert("下限須為整數");
+                }
+                else if(!Number.isInteger(max)){
+                    alert("上限須為整數");
+                }
+                else if(min > max){
+                    alert("下限不得大於上限");
+                }
+                else{
+                    ans = getRandom(min, max);
+                    document.getElementById("set-range-title").style.display = "none";
+                    document.getElementById("set-range-form").style.display = "none";
+                    updateRange();
+                    document.getElementById("form").style.display = "block";
+                }
+            };
+            //確認答案是否正確並更新畫面
+            function checkAnswer(){
+                var guess = parseInt(document.getElementById("guess").value);
+                time++;
+                document.getElementById("time").innerHTML = "目前猜測次數： " + time + "次"; 
+                //賓果
+                if (guess == ans){
+                    document.getElementById("alert").style.display="none";
+                    var text = "恭喜答對！正確答案為" + guess + "，您所花費的次數為：" + time + "次";
+                    document.getElementById("range").innerHTML= text;
+                    document.getElementById("form").style.display="none";
+                    document.getElementById("time").style.display="none";
+                    document.getElementById("renew").style.display="block";
+                }
+                else if (guess < min || guess > max){
+                    var text = "請輸入" + min + "-" + max + "的數字";
+                    document.getElementById("alert").innerHTML = text;
+                    document.getElementById("alert").style.display="block";
+                }
+                else if (guess >= min && guess < ans){
+                    min = guess + 1;
+                    updateRange();
+                }
+                else{
+                    max = guess - 1;
+                    updateRange();
+                }
+                
+            };
+
+            
+        </script>
+    </body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ZH_TW">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="description" content="終極密碼">
+        <meta name="keyword" content="free game, 終極密碼">
+        <link href="stylesheets/custom.css" rel="stylesheet">
+
+        <title>終極密碼</title>
+    </head>
+    <body>
+        <h1>終極密碼</h1>
+        <!--設定玩家人數-->
+        <h2 id="set-player-title">請設定玩家人數</h2>
+        <form id="set-player-form">
+            <div align="center">
+                <p>玩家人數(2人以上)：<input type="number" class="input-number" id="playernum"></p>
+                <button type="button" value="輸入" onclick="setPlayerNum()">確定</button>                
+            </div>
+        </form>
+        <!--/設定玩家人數-->
+        <!--設定密碼範圍-->
+        <h2 id="set-range-title" style="display: none;">請設定密碼範圍</h2>
+        <form id="set-range-form" style="display: none">
+            <div align="center">
+                <p>請設定下限：<input type="number" class="input-number" id="lowerbound"></p>
+                <p>請設定上限：<input type="number" class="input-number" id="upperbound"></p>
+                <button type="button" value="輸入" onclick="startGame()">確定</button>                
+            </div>
+        </form>
+        <!--/設定密碼範圍-->
+        <!--play game-->
+        <h2 id="range"></h2>
+        <form id="form">
+            <div class="input">
+                <input type="number" class="input-number" id="guess">
+                <button type="button" value="輸入" onclick="checkAnswer()">輸入</button>
+            </div>
+            <p align="center" id="alert" class="alert"></p>
+            <p id="current-player" class="current-player"></p>
+            <div align="center">
+                <button type="submit" onclick="location.href='single-player.html'">重新開始</button>
+                <button type="submit" onclick="location.href='index.html'">回首頁</button>
+            </div>
+        </form>
+        <!--/play game-->
+        <!--再來一局-->
+        <div id="renew" align="center">
+            <button type="submit" onclick="location.href='multi-player.html'">再來一局</button>
+            <button type="submit" onclick="location.href='index.html'">回首頁</button>
+        </div>
+
+
+        <script>
+            //產生x-y的亂數
+            function getRandom(x,y){
+                return random = Math.floor(Math.random()*(y - x + 1)) + x;
+            };
+            var min;  //下限
+            var max;//上限
+            var ans;//正確答案
+            //更新猜數字範圍
+            function updateRange(){
+                var text = "請在" + min + "至" + max + "的範圍內選擇一個數字";
+                document.getElementById("range").innerHTML = text; 
+                document.getElementById("alert").style.display = "none";
+            };
+            //設定玩家人數
+            var playerNum;
+            function setPlayerNum(){
+                let num = parseFloat(document.getElementById("playernum").value);
+                if (isNaN(num)){
+                    alert("人數不得為空");
+                }
+                else if (!Number.isInteger(num)){
+                    alert("人數須為整數");
+                }
+                else if (num < 2){
+                    alert("人數須為兩人以上");
+                }
+                else{
+                    document.getElementById("set-player-title").style.display = "none";
+                    document.getElementById("set-player-form").style.display = "none";
+                    document.getElementById("set-range-title").style.display = "block";
+                    document.getElementById("set-range-form").style.display = "block";
+                    playerNum = num;
+                }
+                    
+            }
+            //設定起始玩家
+            var currentPlayer;
+            function updateCurrentPlayer(){
+                text = "請玩家" + currentPlayer + "選擇一個數字";
+                document.getElementById("current-player").innerHTML = text;
+            }
+            function setFirstPlayer(){
+                currentPlayer = Math.floor(Math.random()*playerNum) + 1;
+                updateCurrentPlayer();
+            };
+            //切換玩家
+            function updatePlayer(){
+                currentPlayer ++;
+                if(currentPlayer > playerNum)
+                    currentPlayer -= playerNum;
+                updateCurrentPlayer();
+            };
+            function setRange(){
+                min = parseInt(document.getElementById("lowerbound").value);
+                max = parseInt(document.getElementById("upperbound").value);
+                if(isNaN(min)){
+                    alert("請輸入下限");
+                }
+                else if(isNaN(max)){
+                    alert("請輸入上限");
+                }
+                else if(!Number.isInteger(min)){
+                    alert("下限須為整數");
+                }
+                else if(!Number.isInteger(max)){
+                    alert("上限須為整數");
+                }
+                else if(min > max){
+                    alert("下限不得大於上限");
+                }
+                else{
+                    ans = getRandom(min, max);
+                    document.getElementById("set-range-title").style.display = "none";
+                    document.getElementById("set-range-form").style.display = "none";
+                    updateRange();
+                    document.getElementById("form").style.display = "block";
+                }
+            };
+            //確認答案是否正確並更新畫面
+            function checkAnswer(){
+                var guess = parseInt(document.getElementById("guess").value);
+                //賓果
+                if (guess == ans){
+                    document.getElementById("alert").style.display="none";
+                    var text = "恭喜玩家" + currentPlayer + "答對！正確答案為" + guess;
+                    document.getElementById("range").innerHTML= text;
+                    document.getElementById("form").style.display="none";
+                    document.getElementById("current-player").style.display="none";
+                    document.getElementById("renew").style.display="block";
+                }
+                else if (guess < min || guess > max){
+                    var text = "請輸入" + min + "-" + max + "的數字";
+                    document.getElementById("alert").innerHTML = text;
+                    document.getElementById("alert").style.display="block";
+                }
+                else if (guess >= min && guess < ans){
+                    min = guess + 1;
+                    updatePlayer();
+                    updateRange();
+                }
+                else{
+                    max = guess - 1;
+                    updatePlayer();
+                    updateRange();
+                }
+                
+            };
+            //初始遊戲配置
+            function startGame(){
+                setRange();
+                setFirstPlayer();
+            }
+            
+        </script>
+    </body>
+</html>

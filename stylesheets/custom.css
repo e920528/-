@@ -1,0 +1,28 @@
+h1,h2{
+    text-align: center;
+}
+#single-player,#multi-player{
+    width: 100px;
+    height: 30px;
+}
+#renew,#form{
+    display: none;
+}
+.input{
+    margin-left: 600px;
+}
+.input-number{
+    height: 16px;
+    width: 40px;
+}
+.alert{
+    color: red;
+    align-self: center;
+    font-size: 12px;
+    font-weight: bold;
+    display: none;
+}
+.time,.current-player{
+    margin-left: 665px;
+    font-weight: bold;
+}
